@@ -12,7 +12,7 @@ class Main extends Sprite
 		addChild(new FlxGame(1024, 768, TitleState, 60, 60, true, false));
 
 		#if !mobile
-		addChild(new FPS(10, 13, 0xFFFFFF));
+		addChild(new FPS(10, 3, 0xFFFFFF));
 		#end
 	}
 }

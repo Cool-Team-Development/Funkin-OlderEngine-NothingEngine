@@ -1113,9 +1113,12 @@ class PlayState extends MusicBeatState
 
 		if (!up && !down && !right && !left)
 		{
-			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
+			if (!boyfriend.animation.curAnim.name.startsWith("sing") && !boyfriend.animation.curAnim.name.endsWith('miss'))
 			{
+				//new FlxTimer().start(8 / 60, function(tmr:FlxTimer)
+				//{
 				boyfriend.playAnim('idle');
+				//});
 			}
 		}
 
