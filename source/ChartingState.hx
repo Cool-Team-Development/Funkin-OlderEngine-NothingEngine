@@ -31,6 +31,7 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
+import playTest.PlayTestState;
 
 using StringTools;
 
@@ -77,7 +78,9 @@ class ChartingState extends MusicBeatState
 	var vocals:FlxSound;
 
 	override function create()
-	{
+	{	
+		FlxG.mouse.visible = true;
+
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
 		add(gridBG);
 
@@ -449,6 +452,14 @@ class ChartingState extends MusicBeatState
 			FlxG.sound.music.stop();
 			vocals.stop();
 			FlxG.switchState(new PlayState());
+		}
+
+		if (FlxG.keys.justPressed.ESCAPE)
+		{
+			PlayTestState.SONG = _song;
+			FlxG.sound.music.stop();
+			vocals.stop();
+			FlxG.switchState(new PlayTestState());			
 		}
 
 		if (!typingShit.hasFocus)

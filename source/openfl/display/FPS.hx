@@ -1,5 +1,6 @@
 package openfl.display;
 
+import flixel.FlxG;
 import openfl.system.System;
 import flixel.math.FlxMath;
 import haxe.Timer;
@@ -51,7 +52,7 @@ class FPS extends TextField
 		currentFPS = 0;
 		secondFPS = 0;
 		selectable = false;
-		mouseEnabled = false;
+		mouseEnabled = true;
 		defaultTextFormat = new TextFormat("_sans", 16, color, true);
 		text = "FPS: ";
 
@@ -67,8 +68,8 @@ class FPS extends TextField
 		});
 		#end
 
-		width = 1024;
-		height = 768;
+		width = 1280;
+		height = 720;
 	}
 
 	// Event Handlers
@@ -85,7 +86,7 @@ class FPS extends TextField
 
 		var currentCount = times.length;
 		currentFPS = Math.round((currentCount + cacheCount) / 2);
-		secondFPS = Math.round((currentCount + secondCache) / 2.2);
+		secondFPS = Math.round((currentCount + secondCache) / 2);
 
 		var memoryMegas:Float = 0;
 		memoryMegas = Math.abs(FlxMath.roundDecimal(System.totalMemory / 1000000, 1));
@@ -104,10 +105,10 @@ class FPS extends TextField
 
 		cacheCount = currentCount;
 
-		if (currentFPS == 60){
+		if (secondCache == 60){
 			secondCache = 0;
 		}else{
-			secondCache = 3 + times.length;
+			secondCache = 4 + times.length;
 		}
 	}
 }

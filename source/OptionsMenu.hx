@@ -51,7 +51,7 @@ class OptionsMenu extends MusicBeatState
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
-		versionShit = new FlxText(5, FlxG.height - 48, 0, "", 18);
+		versionShit = new FlxText(5, FlxG.height - 18, 0, "", 18);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);

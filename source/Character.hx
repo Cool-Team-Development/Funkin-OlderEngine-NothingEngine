@@ -139,6 +139,35 @@ class Character extends FlxSprite
 		}
 	}
 
+	override function update(elapsed:Float)
+	{
+		if (curCharacter != 'bf')
+		{
+			if (animation.curAnim.name == "singUP" || animation.curAnim.name == "singDOWN" || animation.curAnim.name == "singLEFT" || animation.curAnim.name == "singRIGHT"){
+				holdTimer += elapsed;
+			}
+
+			var dadVar:Float = 4;
+
+			if (curCharacter == 'dad')
+				dadVar = 6.1;
+			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
+			{
+				dance();
+				holdTimer = 0;
+			}
+		}
+
+		switch (curCharacter)
+		{
+			case 'gf':
+				if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished)
+					playAnim('danceRight');
+		}
+
+		super.update(elapsed);
+	}
+
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
 		animation.play(AnimName, Force, Reversed, Frame);

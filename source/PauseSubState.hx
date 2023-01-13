@@ -6,6 +6,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.input.keyboard.FlxKey;
+import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
 
 class PauseSubState extends FlxSubState
@@ -23,7 +24,7 @@ class PauseSubState extends FlxSubState
 		// add(bf);
 
 		var text:FlxText = new FlxText(0, 0, 0, 
-			"!PAUSE!\nPress Enter to continue\nPress Esc to Exit", 20, false);
+			"!PAUSE!\nSong: " + PlayState.SONG.song + "\nPress Enter to continue\nPress R to reset\nPress Esc to Exit", 20, false);
 		text.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		text.screenCenter();
 		add(text);
@@ -31,6 +32,7 @@ class PauseSubState extends FlxSubState
 		// bf.playAnim('firstDeath');
 
 		bg.cameras = [FlxG.cameras.list[1]];
+		text.cameras = [FlxG.cameras.list[1]];
 	}
 
 	override function update(elapsed:Float)
@@ -41,6 +43,18 @@ class PauseSubState extends FlxSubState
 		{
 			PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
 		}*/
+
+		if (FlxG.keys.justPressed.R)
+		{
+			FlxG.sound.music.stop();
+			new FlxTimer().start(0.7, function(tmr:FlxTimer)
+			{
+				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
+				{
+					FlxG.switchState(new PlayState());
+				});
+			});
+		}
 
 		if (FlxG.keys.justPressed.ENTER)
 			close();

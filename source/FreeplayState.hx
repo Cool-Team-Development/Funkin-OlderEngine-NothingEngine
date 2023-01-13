@@ -60,12 +60,12 @@ class FreeplayState extends MusicBeatState
 			// songText.screenCenter(X);
 		}
 
-		scoreText = new FlxText(5, FlxG.height - 48, 0, "", 18);
+		scoreText = new FlxText(5, FlxG.height - 18, 0, "", 18);
 		// scoreText.autoSize = false;
 		scoreText.setFormat("assets/fonts/vcr.ttf", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		// scoreText.alignment = RIGHT;
 
-		diffText = new FlxText(5, FlxG.height - 64, 0, "", 18);
+		diffText = new FlxText(5, FlxG.height - 24, 0, "", 18);
 		diffText.setFormat("assets/fonts/vcr.ttf", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(diffText);
 
