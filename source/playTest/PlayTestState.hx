@@ -506,7 +506,7 @@ class PlayTestState extends MusicBeatState
 		// trace("SONG POS: " + Conductor.songPosition);
 		// FlxG.sound.music.pitch = 2;
 
-		timeText.text = "Time: " + Conductor.songPosition;
+		timeText.text = "Time: " + Conductor.songPosition + " Sec";
 
 		if (FlxG.save.data.watermark == true && FlxG.save.data.missesDis == true)
 			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore + " - Misses: " + misses;

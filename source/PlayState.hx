@@ -277,7 +277,7 @@ class PlayState extends MusicBeatState
 		versionShit.setFormat("VCR OSD Mono", 22, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
-		timeText = new FlxText(5, FlxG.height - 24, 0, "");
+		timeText = new FlxText(5, FlxG.height - 36, 0, "");
 		timeText.scrollFactor.set();
 		timeText.setFormat("VCR OSD Mono", 22, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(timeText);		
@@ -625,7 +625,7 @@ class PlayState extends MusicBeatState
 			FlxG.switchState(new ChartingState());
 		}
 
-		timeText.text = "Time: " + Conductor.songPosition;
+		timeText.text = "Time: " + Conductor.songPosition + " Sec";
 
 		if (FlxG.save.data.watermark == true && FlxG.save.data.missesDis == true)
 			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore + " - Misses: " + misses;

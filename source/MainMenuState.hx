@@ -71,7 +71,7 @@ class MainMenuState extends MusicBeatState
 		}
 
 		if (FlxG.save.data.watermark){
-			var versionShit:FlxText = new FlxText(5, FlxG.height - 24, 0, "Nothing Engine v0.1");
+			var versionShit:FlxText = new FlxText(5, FlxG.height - 36, 0, "Nothing Engine v0.1");
 			versionShit.scrollFactor.set();
 			versionShit.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			add(versionShit);

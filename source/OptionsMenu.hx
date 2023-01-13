@@ -23,7 +23,6 @@ class OptionsMenu extends MusicBeatState
 			"Downscroll",
 			"Misses Display",
 			"Watermark",
-			"Hide GF",
 			"Back"
 		];
 

@@ -65,7 +65,7 @@ class FreeplayState extends MusicBeatState
 		scoreText.setFormat("assets/fonts/vcr.ttf", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		// scoreText.alignment = RIGHT;
 
-		diffText = new FlxText(5, FlxG.height - 24, 0, "", 18);
+		diffText = new FlxText(5, FlxG.height - 36, 0, "", 18);
 		diffText.setFormat("assets/fonts/vcr.ttf", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(diffText);
 
