@@ -77,6 +77,8 @@ class ChartingState extends MusicBeatState
 
 	var vocals:FlxSound;
 
+	var textHint:FlxText;
+
 	override function create()
 	{	
 		FlxG.mouse.visible = true;
@@ -137,6 +139,10 @@ class ChartingState extends MusicBeatState
 		UI_box.x = FlxG.width / 2;
 		UI_box.y = 20;
 		add(UI_box);
+
+		textHint = new FlxText(0, 0, 0, "", 16);
+		textHint.scrollFactor.set();
+		add(textHint);
 
 		addSongUI();
 		addSectionUI();
@@ -511,12 +517,13 @@ class ChartingState extends MusicBeatState
 			if (FlxG.keys.justPressed.DOWN)
 				Conductor.changeBPM(Conductor.bpm - 1); */
 
-		if (FlxG.keys.justPressed.RIGHT)
+		if (FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
 			changeSection(curSection + 1);
-		if (FlxG.keys.justPressed.LEFT)
+		if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
 			changeSection(curSection - 1);
 
 		bpmTxt.text = "BPM: " + Conductor.bpm + "\nSection: " + curSection;
+		textHint.text = "Press Enter to play\nPress Esc to play chart test\nPress Left, Right, A or D to switch section";
 		super.update(elapsed);
 	}
 

@@ -86,7 +86,7 @@ class FPS extends TextField
 
 		var currentCount = times.length;
 		currentFPS = Math.round((currentCount + cacheCount) / 2);
-		secondFPS = Math.round((currentCount + secondCache) / 2);
+		secondFPS = Math.round((currentCount + secondCache) / 2.2);
 
 		var memoryMegas:Float = 0;
 		memoryMegas = Math.abs(FlxMath.roundDecimal(System.totalMemory / 1000000, 1));
@@ -108,7 +108,7 @@ class FPS extends TextField
 		if (secondCache == 60){
 			secondCache = 0;
 		}else{
-			secondCache = 4 + times.length;
+			secondCache = 1 + times.length;
 		}
 	}
 }

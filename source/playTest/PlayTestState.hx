@@ -87,6 +87,10 @@ class PlayTestState extends MusicBeatState
 
 	public static var campaignScore:Int = 0;
 
+	var songLength:Float = 0;
+
+	var songPercent:Float = 0;
+
     var bg:FlxSprite;
 
 	override public function create()
@@ -120,6 +124,10 @@ class PlayTestState extends MusicBeatState
 		strumLine = new FlxSprite(0, 50).makeGraphic(FlxG.width, 10);
 		strumLine.scrollFactor.set();
 
+		if (FlxG.save.data.down){
+			strumLine.y = FlxG.height - 165;
+		}
+
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
 		add(strumLineNotes);
 
@@ -152,6 +160,9 @@ class PlayTestState extends MusicBeatState
 
 		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(AssetPaths.healthBar__png);
 		healthBarBG.screenCenter(X);
+		if (FlxG.save.data.down){
+			healthBarBG.y = 50;
+		}
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
 
@@ -174,12 +185,12 @@ class PlayTestState extends MusicBeatState
 
 		versionShit = new FlxText(5, FlxG.height - 18, 0, "");
 		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 22, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
-		timeText = new FlxText(5, FlxG.height - 24, 0, "");
+		timeText = new FlxText(5, FlxG.height - 36, 0, "");
 		timeText.scrollFactor.set();
-		timeText.setFormat("VCR OSD Mono", 22, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		timeText.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(timeText);		
 
 		// healthBar.visible = healthHeads.visible = healthBarBG.visible = false;
@@ -289,6 +300,12 @@ class PlayTestState extends MusicBeatState
 		FlxG.sound.playMusic("assets/music/" + SONG.song + "_Inst" + TitleState.soundExt, 1, false);
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
+
+		if (timeText != null)
+			FlxTween.tween(timeText, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
+		
+		if (versionShit != null)
+			FlxTween.tween(versionShit, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 	}
 
 	var debugNum:Int = 0;
@@ -498,6 +515,7 @@ class PlayTestState extends MusicBeatState
 
 	private var paused:Bool = false;
 	var startedCountdown:Bool = false;
+	var version:String = "1.0";
 
 	override public function update(elapsed:Float)
 	{
@@ -506,16 +524,14 @@ class PlayTestState extends MusicBeatState
 		// trace("SONG POS: " + Conductor.songPosition);
 		// FlxG.sound.music.pitch = 2;
 
-		timeText.text = "Time: " + Conductor.songPosition + " Sec";
-
 		if (FlxG.save.data.watermark == true && FlxG.save.data.missesDis == true)
-			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore + " - Misses: " + misses;
+			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore + " - Misses: " + misses + " | Play Test Beta v" + version;
 		else if (FlxG.save.data.watermark == false && FlxG.save.data.missesDis == true)
-			versionShit.text = "Score: " + songScore+ " - Misses: " + misses;
+			versionShit.text = "Score: " + songScore+ " - Misses: " + misses + " | Play Test Beta v" + version;
 		else if (FlxG.save.data.watermark == true && FlxG.save.data.missesDis == false)
-			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore;
+			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore + " | Play Test Beta v" + version;
 		else
-			versionShit.text = "Score: " + songScore;
+			versionShit.text = "Score: " + songScore + " | Play Test Beta v" + version;
 
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
@@ -547,17 +563,19 @@ class PlayTestState extends MusicBeatState
 
 			if (!paused)
 			{
-				songTime += FlxG.game.ticks - previousFrameTime;
-				previousFrameTime = FlxG.game.ticks;
+				var curTime:Float = FlxG.sound.music.time;
+				if(curTime < 0) curTime = 0;
+				songPercent = (curTime / songLength);
 
-				// Interpolation type beat
-				if (Conductor.lastSongPos != Conductor.songPosition)
-				{
-					songTime = (songTime + Conductor.songPosition) / 2;
-					Conductor.lastSongPos = Conductor.songPosition;
-					// Conductor.songPosition += FlxG.elapsed * 1000;
-					// trace('MISSED FRAME');
-				}
+				var secondsTotal:Int = Math.floor((songLength - curTime) / 1000);
+				if(secondsTotal < 0) secondsTotal = 0;
+
+				var minutesRemaining:Int = Math.floor(secondsTotal / 60);
+				var secondsRemaining:String = '' + secondsTotal % 60;
+				if(secondsRemaining.length < 2) secondsRemaining = '0' + secondsRemaining; //Dunno how to make it display a zero first in Haxe lol
+
+				if (timeText != null)
+					timeText.text = "Time: " + minutesRemaining + ':' + secondsRemaining;
 			}
 
 			// Conductor.lastSongPos = FlxG.sound.music.time;
@@ -641,12 +659,18 @@ class PlayTestState extends MusicBeatState
 					daNote.destroy();
 				}
 
-				daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
+				if (FlxG.save.data.down){
+					// daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (-0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
+					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (-0.45 * PlayState.SONG.speed));
+				}
+				else{
+					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
+				}
 
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
-				if (daNote.y < -daNote.height)
+				if (daNote.y < -daNote.height && !FlxG.save.data.down || daNote.y >= strumLine.y + 106 && FlxG.save.data.down)
 				{
 					if (daNote.tooLate)
 					{

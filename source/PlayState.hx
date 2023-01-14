@@ -74,7 +74,8 @@ class PlayState extends MusicBeatState
 	private var generatedMusic:Bool = false;
 	private var startingSong:Bool = false;
 
-	private var healthHeads:FlxSprite;
+	private var iconP1:HealthIcon;
+	private var iconP2:HealthIcon;
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
 
@@ -90,6 +91,10 @@ class PlayState extends MusicBeatState
 	var timeText:FlxText;
 
 	public static var campaignScore:Int = 0;
+
+	var songLength:Float = 0;
+
+	var songPercent:Float = 0;
 
 	override public function create()
 	{
@@ -224,6 +229,10 @@ class PlayState extends MusicBeatState
 		strumLine = new FlxSprite(0, 50).makeGraphic(FlxG.width, 10);
 		strumLine.scrollFactor.set();
 
+		if (FlxG.save.data.down){
+			strumLine.y = FlxG.height - 165;
+		}
+
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
 		add(strumLineNotes);
 
@@ -252,6 +261,9 @@ class PlayState extends MusicBeatState
 
 		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(AssetPaths.healthBar__png);
 		healthBarBG.screenCenter(X);
+		if (FlxG.save.data.down){
+			healthBarBG.y = 50;
+		}
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
 
@@ -262,25 +274,23 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		healthHeads = new FlxSprite();
-		var headTex = FlxAtlasFrames.fromSparrow(AssetPaths.healthHeads__png, AssetPaths.healthHeads__xml);
-		healthHeads.frames = headTex;
-		healthHeads.animation.add('healthy', [0]);
-		healthHeads.animation.add('unhealthy', [1]);
-		healthHeads.y = healthBar.y - (healthHeads.height / 2);
-		healthHeads.scrollFactor.set();
-		healthHeads.antialiasing = true;
-		add(healthHeads);
+		iconP1 = new HealthIcon(SONG.player1, true);
+		iconP1.y = healthBar.y - (iconP1.height / 2);
+		add(iconP1);
+
+		iconP2 = new HealthIcon(SONG.player2, false);
+		iconP2.y = healthBar.y - (iconP2.height / 2);
+		add(iconP2);
 
 		versionShit = new FlxText(5, FlxG.height - 18, 0, "");
 		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 22, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
 		timeText = new FlxText(5, FlxG.height - 36, 0, "");
 		timeText.scrollFactor.set();
-		timeText.setFormat("VCR OSD Mono", 22, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(timeText);		
+		timeText.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(timeText);	
 
 		// healthBar.visible = healthHeads.visible = healthBarBG.visible = false;
 		if (isStoryMode)
@@ -296,7 +306,8 @@ class PlayState extends MusicBeatState
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
-		healthHeads.cameras = [camHUD];
+		iconP1.cameras = [camHUD];
+		iconP2.cameras = [camHUD];
 		versionShit.cameras = [camHUD];
 		timeText.cameras = [camHUD];
 		doof.cameras = [camHUD];
@@ -394,6 +405,14 @@ class PlayState extends MusicBeatState
 		FlxG.sound.playMusic("assets/music/" + SONG.song + "_Inst" + TitleState.soundExt, 1, false);
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
+
+		songLength = FlxG.sound.music.length;
+		
+		if (timeText != null)
+			FlxTween.tween(timeText, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
+
+		if (versionShit != null)
+			FlxTween.tween(versionShit, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 	}
 
 	var debugNum:Int = 0;
@@ -625,7 +644,7 @@ class PlayState extends MusicBeatState
 			FlxG.switchState(new ChartingState());
 		}
 
-		timeText.text = "Time: " + Conductor.songPosition + " Sec";
+		// timeText.text = "Time: " + Conductor.songPosition + " Sec";
 
 		if (FlxG.save.data.watermark == true && FlxG.save.data.missesDis == true)
 			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore + " - Misses: " + misses;
@@ -639,17 +658,29 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		healthHeads.setGraphicSize(Std.int(FlxMath.lerp(150, healthHeads.width, 0.50)));
-		healthHeads.updateHitbox();
-		healthHeads.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (healthHeads.width / 2);
+		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.50)));
+		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.50)));
+
+		iconP1.updateHitbox();
+		iconP2.updateHitbox();
+
+		var iconOffset:Int = 26;
+		
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
 		if (health > 2)
 			health = 2;
 
 		if (healthBar.percent < 20)
-			healthHeads.animation.play('unhealthy');
+			iconP1.animation.curAnim.curFrame = 1;
 		else
-			healthHeads.animation.play('healthy');
+			iconP1.animation.curAnim.curFrame = 0;
+
+		if (healthBar.percent > 80)
+			iconP2.animation.curAnim.curFrame = 1;
+		else
+			iconP2.animation.curAnim.curFrame = 0;
 
 		/* if (FlxG.keys.justPressed.NINE)
 			FlxG.switchState(new Charting()); */
@@ -679,17 +710,31 @@ class PlayState extends MusicBeatState
 
 			if (!paused)
 			{
-				songTime += FlxG.game.ticks - previousFrameTime;
-				previousFrameTime = FlxG.game.ticks;
+				//songTime += FlxG.game.ticks - previousFrameTime;
+				//previousFrameTime = FlxG.game.ticks;
+//
+				//// Interpolation type beat
+				//if (Conductor.lastSongPos != Conductor.songPosition)
+				//{
+				//	songTime = (songTime + Conductor.songPosition) / 2;
+				//	Conductor.lastSongPos = Conductor.songPosition;
+				//	// Conductor.songPosition += FlxG.elapsed * 1000;
+				//	// trace('MISSED FRAME');
+				//}
 
-				// Interpolation type beat
-				if (Conductor.lastSongPos != Conductor.songPosition)
-				{
-					songTime = (songTime + Conductor.songPosition) / 2;
-					Conductor.lastSongPos = Conductor.songPosition;
-					// Conductor.songPosition += FlxG.elapsed * 1000;
-					// trace('MISSED FRAME');
-				}
+				var curTime:Float = FlxG.sound.music.time;
+				if(curTime < 0) curTime = 0;
+				songPercent = (curTime / songLength);
+
+				var secondsTotal:Int = Math.floor((songLength - curTime) / 1000);
+				if(secondsTotal < 0) secondsTotal = 0;
+
+				var minutesRemaining:Int = Math.floor(secondsTotal / 60);
+				var secondsRemaining:String = '' + secondsTotal % 60;
+				if(secondsRemaining.length < 2) secondsRemaining = '0' + secondsRemaining; //Dunno how to make it display a zero first in Haxe lol
+
+				if (timeText != null)
+					timeText.text = "Time: " + minutesRemaining + ':' + secondsRemaining;
 			}
 
 			// Conductor.lastSongPos = FlxG.sound.music.time;
@@ -832,12 +877,18 @@ class PlayState extends MusicBeatState
 					daNote.destroy();
 				}
 
-				daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
+				if (FlxG.save.data.down){
+					// daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (-0.45 * FlxMath.roundDecimal(SONG.speed, 2)));
+					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (-0.45 * PlayState.SONG.speed));
+				}
+				else{
+					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
+				}
 
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
-				if (daNote.y < -daNote.height)
+				if (daNote.y < -daNote.height && !FlxG.save.data.down || daNote.y >= strumLine.y + 106 && FlxG.save.data.down)
 				{
 					if (daNote.tooLate)
 					{
@@ -1386,8 +1437,11 @@ class PlayState extends MusicBeatState
 			camHUD.zoom += 0.03;
 		}
 
-		healthHeads.setGraphicSize(Std.int(healthHeads.width + 30));
-		healthHeads.updateHitbox();
+		iconP1.setGraphicSize(Std.int(iconP1.width + 30));
+		iconP2.setGraphicSize(Std.int(iconP2.width + 30));
+
+		iconP1.updateHitbox();
+		iconP2.updateHitbox();
 
 		if (totalBeats % gfSpeed == 0)
 		{
