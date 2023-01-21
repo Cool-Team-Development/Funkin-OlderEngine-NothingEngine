@@ -72,7 +72,7 @@ class MainMenuState extends MusicBeatState
 		}
 
 		if (FlxG.save.data.watermark){
-			var versionShit:FlxText = new FlxText(5, FlxG.height - 36, 0, "Nothing Engine v0.1");
+			var versionShit:FlxText = new FlxText(5, FlxG.height - 36, 0, "Nothing Engine v0.1beta1");
 			versionShit.scrollFactor.set();
 			versionShit.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			add(versionShit);
@@ -120,6 +120,7 @@ class MainMenuState extends MusicBeatState
 				else
 				{
 					selectedSomethin = true;
+					FlxG.camera.flash(FlxColor.WHITE, 1);
 					FlxG.sound.play('assets/sounds/confirmMenu' + TitleState.soundExt);
 
 					FlxFlicker.flicker(magenta, 1.1, 0.15, false);

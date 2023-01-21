@@ -1,5 +1,6 @@
 package;
 
+import flixel.effects.FlxFlicker;
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -9,6 +10,8 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
 
 class FreeplayState extends MusicBeatState
 {
@@ -24,6 +27,9 @@ class FreeplayState extends MusicBeatState
 	var intendedScore:Int = 0;
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
+
+	var bg:FlxSprite;
+	var magenta:FlxSprite;
 
 	override function create()
 	{
@@ -43,8 +49,12 @@ class FreeplayState extends MusicBeatState
 
 		// LOAD CHARACTERS
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(AssetPaths.menuBGBlue__png);
+		bg = new FlxSprite().loadGraphic(AssetPaths.menuBGBlue__png);
 		add(bg);
+
+		magenta = new FlxSprite().loadGraphic(AssetPaths.menuDesat__png);
+		magenta.color = 0xFFfd719b;
+		add(magenta);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
@@ -59,6 +69,11 @@ class FreeplayState extends MusicBeatState
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 			// songText.screenCenter(X);
 		}
+
+		var bg:FlxSprite = new FlxSprite().makeGraphic(185, FlxG.height, FlxColor.BLACK);
+		bg.alpha = 0.6;
+		bg.scrollFactor.set();
+		add(bg);
 
 		scoreText = new FlxText(5, FlxG.height - 18, 0, "", 18);
 		// scoreText.autoSize = false;
@@ -136,13 +151,24 @@ class FreeplayState extends MusicBeatState
 
 		if (accepted)
 		{
-			var poop:String = Highscore.formatSong(songs[curSelected].toLowerCase(), curDifficulty);
+			FlxG.camera.flash(FlxColor.WHITE, 1);
+			FlxG.sound.play('assets/sounds/confirmMenu' + TitleState.soundExt);
 
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].toLowerCase());
-			PlayState.isStoryMode = false;
-			FlxG.switchState(new PlayState());
-			if (FlxG.sound.music != null)
-				FlxG.sound.music.stop();
+			FlxFlicker.flicker(bg, 1.1, 0.15, false);
+
+			trace("select song: " + songs[curSelected]);
+			
+			new FlxTimer().start(2, function(tmr:FlxTimer)
+			{
+				var poop:String = Highscore.formatSong(songs[curSelected].toLowerCase(), curDifficulty);
+
+				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].toLowerCase());
+				PlayState.isStoryMode = false;
+				FlxG.switchState(new PlayState());
+				trace("play song");
+				if (FlxG.sound.music != null)
+					FlxG.sound.music.stop();
+			});
 		}
 	}
 

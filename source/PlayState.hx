@@ -90,6 +90,7 @@ class PlayState extends MusicBeatState
 	var misses:Int = 0;
 	var versionShit:FlxText;
 	var timeText:FlxText;
+	var tapping:Bool = false;
 
 	public static var campaignScore:Int = 0;
 
@@ -286,6 +287,7 @@ class PlayState extends MusicBeatState
 
 		versionShit = new FlxText(5, FlxG.height - 18, 0, "");
 		versionShit.scrollFactor.set();
+		versionShit.color = FlxColor.WHITE;
 		versionShit.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
@@ -632,12 +634,15 @@ class PlayState extends MusicBeatState
 		// trace("SONG POS: " + Conductor.songPosition);
 		// FlxG.sound.music.pitch = 2;
 
-		if (misses == 1){
+		if (misses > 1 && !tapping){
 			fcString = "Combo Break";
-		}else if (misses == 20){
+			versionShit.color = FlxColor.RED;
+		}else if (misses > 20 && !tapping){
 			fcString = "Clear";
+			versionShit.color = FlxColor.WHITE;
 		}else{
 			fcString = "FC";
+			versionShit.color = FlxColor.WHITE;
 		}
 
 		if (FlxG.keys.justPressed.ENTER && startedCountdown)
@@ -657,11 +662,11 @@ class PlayState extends MusicBeatState
 		// timeText.text = "Time: " + Conductor.songPosition + " Sec";
 
 		if (FlxG.save.data.watermark == true && FlxG.save.data.missesDis == true)
-			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore + " - Misses: " + misses + " - " + fcString;
+			versionShit.text = "Nothing Engine v0.1beta1 - Song: " + SONG.song + " | Score: " + songScore + " - Misses: " + misses + " - " + fcString;
 		else if (FlxG.save.data.watermark == false && FlxG.save.data.missesDis == true)
 			versionShit.text = "Score: " + songScore+ " - Misses: " + misses + " - " + fcString;
 		else if (FlxG.save.data.watermark == true && FlxG.save.data.missesDis == false)
-			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore;
+			versionShit.text = "Nothing Engine v0.1beta1 - Song: " + SONG.song + " | Score: " + songScore;
 		else
 			versionShit.text = "Score: " + songScore;
 
@@ -906,8 +911,8 @@ class PlayState extends MusicBeatState
 					{
 						health -= 0.04;
 						vocals.volume = 0;
-						if (!FlxG.save.data.ghost)
-							noteMiss(daNote.noteData);
+						tapping = false;
+						noteMiss(daNote.noteData);
 					}
 
 					daNote.active = false;
@@ -1133,6 +1138,7 @@ class PlayState extends MusicBeatState
 		if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic)
 		{
 			boyfriend.holdTimer = 0;
+			tapping = true;
 
 			var possibleNotes:Array<Note> = [];
 
@@ -1172,7 +1178,7 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
-			else if (!FlxG.save.data.ghost)
+			else if (!FlxG.save.data.ghost && !tapping)
 			{
 				badNoteCheck();
 			}
@@ -1260,7 +1266,7 @@ class PlayState extends MusicBeatState
 			}
 			combo = 0;
 
-			misses += 1;
+			misses++;
 
 			songScore -= 10;
 
@@ -1270,8 +1276,8 @@ class PlayState extends MusicBeatState
 
 			boyfriend.stunned = true;
 
-			// get stunned for 8 seconds
-			new FlxTimer().start(8 / 60, function(tmr:FlxTimer)
+			// get stunned for 5 seconds
+			new FlxTimer().start(5 / 60, function(tmr:FlxTimer)
 			{
 				boyfriend.stunned = false;
 			});
@@ -1337,7 +1343,7 @@ class PlayState extends MusicBeatState
 	{
 		if (keyP)
 			goodNoteHit(note);
-		else if((!FlxG.save.data.ghost))
+		else if(!FlxG.save.data.ghost && !tapping)
 			badNoteCheck();
 	}
 
