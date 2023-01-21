@@ -31,6 +31,7 @@ import haxe.Json;
 import lime.utils.Assets;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import icon.HealthIcon;
 
 using StringTools;
 
@@ -95,6 +96,7 @@ class PlayState extends MusicBeatState
 	var songLength:Float = 0;
 
 	var songPercent:Float = 0;
+	var fcString:String = "FC";
 
 	override public function create()
 	{
@@ -630,6 +632,14 @@ class PlayState extends MusicBeatState
 		// trace("SONG POS: " + Conductor.songPosition);
 		// FlxG.sound.music.pitch = 2;
 
+		if (misses == 1){
+			fcString = "Combo Break";
+		}else if (misses == 20){
+			fcString = "Clear";
+		}else{
+			fcString = "FC";
+		}
+
 		if (FlxG.keys.justPressed.ENTER && startedCountdown)
 		{
 			persistentUpdate = false;
@@ -647,9 +657,9 @@ class PlayState extends MusicBeatState
 		// timeText.text = "Time: " + Conductor.songPosition + " Sec";
 
 		if (FlxG.save.data.watermark == true && FlxG.save.data.missesDis == true)
-			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore + " - Misses: " + misses;
+			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore + " - Misses: " + misses + " - " + fcString;
 		else if (FlxG.save.data.watermark == false && FlxG.save.data.missesDis == true)
-			versionShit.text = "Score: " + songScore+ " - Misses: " + misses;
+			versionShit.text = "Score: " + songScore+ " - Misses: " + misses + " - " + fcString;
 		else if (FlxG.save.data.watermark == true && FlxG.save.data.missesDis == false)
 			versionShit.text = "Nothing Engine v0.1 - Song: " + SONG.song + " | Score: " + songScore;
 		else
@@ -869,6 +879,8 @@ class PlayState extends MusicBeatState
 							dad.playAnim('singLEFT', true);
 					}
 
+					dad.holdTimer = 0;
+
 					if (SONG.needsVoices)
 						vocals.volume = 1;
 
@@ -894,7 +906,8 @@ class PlayState extends MusicBeatState
 					{
 						health -= 0.04;
 						vocals.volume = 0;
-						noteMiss(daNote.noteData);
+						if (!FlxG.save.data.ghost)
+							noteMiss(daNote.noteData);
 					}
 
 					daNote.active = false;
@@ -1119,6 +1132,8 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('asdfa', upP);
 		if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic)
 		{
+			boyfriend.holdTimer = 0;
+
 			var possibleNotes:Array<Note> = [];
 
 			notes.forEachAlive(function(daNote:Note)
@@ -1191,7 +1206,7 @@ class PlayState extends MusicBeatState
 
 		if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left)
 		{
-			if (boyfriend.animation.curAnim.name.startsWith("sing") && !boyfriend.animation.curAnim.name.endsWith('miss'))
+			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
 			{
 				boyfriend.playAnim('idle');
 			}
@@ -1455,7 +1470,9 @@ class PlayState extends MusicBeatState
 
 		if (totalBeats % 8 == 7 && curSong == 'Bopeebo')
 		{
-			boyfriend.playAnim('hey', true);
+			// boyfriend.playAnim('hey', true);
+
+			boyfriend.animation.play("hey");
 
 			if (SONG.song == 'Tutorial' && dad.curCharacter == 'gf')
 			{

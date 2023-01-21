@@ -11,6 +11,7 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import icon.CheckIcon;
 
 class OptionsMenu extends MusicBeatState
 {
@@ -22,13 +23,12 @@ class OptionsMenu extends MusicBeatState
 			"Ghost tap",
 			"Downscroll",
 			"Misses Display",
-			"Watermark",
-			"Back"
+			"Watermark"
 		];
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
 
-	var versionShit:FlxText;
+	private var iconArray:Array<CheckIcon> = [];
 
 	override function create()
 	{
@@ -41,6 +41,7 @@ class OptionsMenu extends MusicBeatState
 
 		grpControls = new FlxTypedGroup<Alphabet>();
 		add(grpControls);
+
 		for (i in 0...controlsStrings.length)
 		{
 			var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
@@ -48,14 +49,16 @@ class OptionsMenu extends MusicBeatState
 			controlLabel.targetY = i;
 			grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+
+			var icon:CheckIcon = new CheckIcon(controlsStrings[i]);
+			icon.options = controlLabel;
+
+			// using a FlxGroup is too much fuss!
+			iconArray.push(icon);
+			add(icon);
 		}
 
-		versionShit = new FlxText(5, FlxG.height - 18, 0, "", 18);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(versionShit);
-
-		super.create();
+		super.create();	
 
 		changeSelection();
 	}
@@ -73,50 +76,38 @@ class OptionsMenu extends MusicBeatState
 				case "Ghost tap":
 					if (FlxG.save.data.ghost == true){
 						FlxG.save.data.ghost = false;
-						versionShit.text = "Disable";
+						iconArray[curSelected].animation.play("disable");
 					}else{
 						FlxG.save.data.ghost = true;
-						versionShit.text = "Enable";						
+						iconArray[curSelected].animation.play("enable");						
 					}
 
 				case "Downscroll":
 					if (FlxG.save.data.down == true){
 						FlxG.save.data.down = false;
-						versionShit.text = "Disable";
+						iconArray[curSelected].animation.play("disable");
 					}else{
 						FlxG.save.data.down = true;
-						versionShit.text = "Enable";						
+						iconArray[curSelected].animation.play("enable");						
 					}
 
 				case "Misses Display":
 					if (FlxG.save.data.missesDis == true){
 						FlxG.save.data.missesDis = false;
-						versionShit.text = "Disable";
+						iconArray[curSelected].animation.play("disable");
 					}else{
 						FlxG.save.data.missesDis = true;
-						versionShit.text = "Enable";						
+						iconArray[curSelected].animation.play("enable");						
 					}
 
 				case "Watermark":
 					if (FlxG.save.data.watermark == true){
 						FlxG.save.data.watermark = false;
-						versionShit.text = "Disable";
+						iconArray[curSelected].animation.play("disable");
 					}else{
 						FlxG.save.data.watermark = true;
-						versionShit.text = "Enable";						
+						iconArray[curSelected].animation.play("enable");						
 					}
-					
-				case "Hide GF":
-					if (FlxG.save.data.hideGF == true){
-						FlxG.save.data.hideGF = false;
-						versionShit.text = "Disable";
-					}else{
-						FlxG.save.data.hideGF = true;
-						versionShit.text = "Enable";						
-					}
-
-				case "Back":
-					FlxG.switchState(new MainMenuState());
 			}
 		
 			FlxG.save.flush();
@@ -149,37 +140,30 @@ class OptionsMenu extends MusicBeatState
 		{
 			case "Ghost tap":
 				if (FlxG.save.data.ghost == true){
-					versionShit.text = "Enable";
+					iconArray[curSelected].animation.play("enable");
 				}else{
-					versionShit.text = "Disable";						
+					iconArray[curSelected].animation.play("disable");					
 				}
 
 			case "Downscroll":
 				if (FlxG.save.data.down == true){
-					versionShit.text = "Enable";
+					iconArray[curSelected].animation.play("enable");
 				}else{
-					versionShit.text = "Disable";						
+					iconArray[curSelected].animation.play("disable");					
 				}
 
 			case "Misses Display":
 				if (FlxG.save.data.missesDis == true){
-					versionShit.text = "Enable";
+					iconArray[curSelected].animation.play("enable");
 				}else{
-					versionShit.text = "Disable";						
+					iconArray[curSelected].animation.play("disable");					
 				}
 
 			case "Watermark":
 				if (FlxG.save.data.watermark == true){
-					versionShit.text = "Enable";
+					iconArray[curSelected].animation.play("enable");
 				}else{
-					versionShit.text = "Disable";						
-				}
-		
-			case "Hide GF":
-				if (FlxG.save.data.hideGF == true){
-					versionShit.text = "Enable";
-				}else{
-					versionShit.text = "Disable";						
+					iconArray[curSelected].animation.play("disable");					
 				}
 		}
 

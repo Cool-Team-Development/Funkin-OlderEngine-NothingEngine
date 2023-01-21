@@ -81,6 +81,7 @@ class TitleState extends MusicBeatState
 	var danceLeft:Bool = false;
 	// var titleText:FlxSprite;
 	var pressText:FlxText;
+	var bgG:FlxSprite;
 
 	function startIntro()
 	{
@@ -115,8 +116,17 @@ class TitleState extends MusicBeatState
 		// bg.updateHitbox();
 		add(bg);
 
+		bgG = new FlxSprite().loadGraphic("assets/images/menuDesat.png");
+		bgG.screenCenter();
+		bgG.updateHitbox();
+		add(bgG);
+
 		logoBl = new FlxSprite(-150, -100);
-		logoBl.frames = FlxAtlasFrames.fromSparrow(AssetPaths.logoBumpin__png, AssetPaths.logoBumpin__xml);
+		if (FlxG.save.data.watermark){
+			logoBl.frames = FlxAtlasFrames.fromSparrow("assets/images/logoBumpin/logoBumpin_nothingEngine.png", "assets/images/logoBumpin/logoBumpin_nothingEngine.xml");
+		}else{
+			logoBl.frames = FlxAtlasFrames.fromSparrow("assets/images/logoBumpin/logoBumpin.png", "assets/images/logoBumpin/logoBumpin.xml");
+		}
 		logoBl.antialiasing = false;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
 		logoBl.animation.play('bump');
@@ -125,12 +135,12 @@ class TitleState extends MusicBeatState
 		// logoBl.color = FlxColor.BLACK;
 		add(logoBl);
 
-		pressText = new FlxText(100, FlxG.height * 0.8, 0, "Press Enter to begin", 20, false);
+		pressText = new FlxText(100, FlxG.height * 0.8, 0, "Press Enter to begin", 40, false);
 		pressText.updateHitbox();
 		pressText.screenCenter(X);
 		add(pressText);
 
-		var logo:FlxSprite = new FlxSprite().loadGraphic(AssetPaths.logo__png);
+		var logo:FlxSprite = new FlxSprite().loadGraphic("assets/images/logoBumpin/logoBumpin.png", "assets/images/logoBumpin/logoBumpin.xml");
 		logo.screenCenter();
 		logo.antialiasing = true;
 		// add(logo);
@@ -178,12 +188,6 @@ class TitleState extends MusicBeatState
 	{
 		Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
-
-		if (FlxG.keys.justPressed.F)
-		{
-			FlxG.fullscreen = !FlxG.fullscreen;
-		}
-
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;

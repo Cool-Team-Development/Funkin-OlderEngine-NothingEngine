@@ -37,6 +37,7 @@ class FPS extends TextField
 	var secondFPS(default, null):Int;
 
 	var secondCache:Int;
+	var value0:Bool;
 
 	@:noCompletion private var cacheCount:Int;
 	@:noCompletion private var currentTime:Float;
@@ -51,6 +52,7 @@ class FPS extends TextField
 
 		currentFPS = 0;
 		secondFPS = 0;
+		value0 = true;
 		selectable = false;
 		mouseEnabled = true;
 		defaultTextFormat = new TextFormat("_sans", 16, color, true);
@@ -86,7 +88,7 @@ class FPS extends TextField
 
 		var currentCount = times.length;
 		currentFPS = Math.round((currentCount + cacheCount) / 2);
-		secondFPS = Math.round((currentCount + secondCache) / 2.2);
+		secondFPS = Math.round((currentCount + secondCache) / 14.5);
 
 		var memoryMegas:Float = 0;
 		memoryMegas = Math.abs(FlxMath.roundDecimal(System.totalMemory / 1000000, 1));
@@ -104,11 +106,10 @@ class FPS extends TextField
 		}
 
 		cacheCount = currentCount;
-
-		if (secondCache == 60){
+		if (secondCache == 10 && value0 == true){
 			secondCache = 0;
 		}else{
-			secondCache = 1 + times.length;
+			secondCache = currentCount;
 		}
 	}
 }

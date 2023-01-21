@@ -143,8 +143,15 @@ class Character extends FlxSprite
 	{
 		if (curCharacter != 'bf')
 		{
-			if (animation.curAnim.name == "singUP" || animation.curAnim.name == "singDOWN" || animation.curAnim.name == "singLEFT" || animation.curAnim.name == "singRIGHT"){
-				holdTimer += elapsed;
+			// if (animation.curAnim.name.startsWith('sing'))
+			// {
+			// 	holdTimer += elapsed;
+			// }
+
+			switch(animation.curAnim.name)
+			{
+				default:
+					holdTimer += elapsed;
 			}
 
 			var dadVar:Float = 4;

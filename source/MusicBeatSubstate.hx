@@ -40,6 +40,11 @@ class MusicBeatSubstate extends FlxSubState
 		curBeat = Math.round(curStep / 4);
 
 		super.update(elapsed);
+
+		if (FlxG.keys.justPressed.F)
+		{
+			FlxG.fullscreen = !FlxG.fullscreen;
+		}	
 	}
 
 	/**

@@ -492,7 +492,7 @@ class ChartingState extends MusicBeatState
 					changeSection(curSection);
 			}
 
-			if (FlxG.keys.pressed.W || FlxG.keys.pressed.S)
+			if (FlxG.keys.pressed.W || FlxG.keys.pressed.S || FlxG.keys.pressed.UP || FlxG.keys.pressed.DOWN)
 			{
 				FlxG.sound.music.pause();
 				vocals.pause();

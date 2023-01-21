@@ -1,4 +1,4 @@
-package;
+package icon;
 
 import flixel.FlxSprite;
 
@@ -10,6 +10,7 @@ class HealthIcon extends FlxSprite
 		loadGraphic('assets/images/icon/icon_grid.png', true, 150, 150);
 
         animation.add('bf', [0, 1], 0, false, isPlayer);
+		animation.add('gf', [2, 2], 0, false, isPlayer);
         animation.add('dad', [2, 2], 0, false, isPlayer);
         animation.add('spooky', [3, 4], 0, false, isPlayer);
 
