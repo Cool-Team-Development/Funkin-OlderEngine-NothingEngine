@@ -4,6 +4,8 @@ import flixel.FlxG;
 
 class DataFlxG 
 {
+    public static var firstPlay:Bool = true;
+
     static public function dataFlxG_save() 
     {
         if (FlxG.save.data.ghost == null){
@@ -20,6 +22,10 @@ class DataFlxG
 
         if (FlxG.save.data.watermark == null){
             FlxG.save.data.watermark = false;
+        }
+
+        if (FlxG.save.data.checkVer == null){
+            FlxG.save.data.checkVer = true;
         }
     }
 }

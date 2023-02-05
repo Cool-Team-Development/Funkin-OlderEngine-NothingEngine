@@ -49,26 +49,11 @@ class TitleState extends MusicBeatState
 		TitleState.soundExt = '.ogg';
 		#end
 
-		PlayerSettings.init();
-		DataFlxG.dataFlxG_save();
-
 		curWacky = FlxG.random.getObject(wackyIntros);
 
 		// DEBUG BULLSHIT
 
 		super.create();
-
-		FlxG.save.bind('funkin', 'ninjamuffin99');
-
-		Highscore.load();
-
-		if (FlxG.save.data.weekUnlocked != null)
-		{
-			StoryMenuState.weekUnlocked = FlxG.save.data.weekUnlocked;
-
-			if (StoryMenuState.weekUnlocked.length < 3)
-				StoryMenuState.weekUnlocked.insert(0, true);
-		}
 
 		#if SKIP_TO_PLAYSTATE
 		FlxG.switchState(new StoryMenuState());

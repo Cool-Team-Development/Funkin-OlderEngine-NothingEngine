@@ -12,6 +12,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import icon.CheckIcon;
+import Main;
 
 class OptionsMenu extends MusicBeatState
 {
@@ -23,12 +24,15 @@ class OptionsMenu extends MusicBeatState
 			"Ghost tap",
 			"Downscroll",
 			"Misses Display",
-			"Watermark"
+			"Watermark",
+			"Check Version"
 		];
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
 
 	private var iconArray:Array<CheckIcon> = [];
+
+	var text:FlxText;
 
 	override function create()
 	{
@@ -61,6 +65,11 @@ class OptionsMenu extends MusicBeatState
 		super.create();	
 
 		changeSelection();
+
+		text = new FlxText(5, FlxG.height - 18, 0, "FPS Cap: " + Main.fps + " (Press Left or Right to change FPS cap)");
+		text.scrollFactor.set();
+		text.setFormat("VCR OSD Mono", 18, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(text);
 	}
 
 	override function update(elapsed:Float)
@@ -108,6 +117,15 @@ class OptionsMenu extends MusicBeatState
 						FlxG.save.data.watermark = true;
 						iconArray[curSelected].animation.play("enable");						
 					}
+
+				case "Check Version":
+					if (FlxG.save.data.checkVer == true){
+						FlxG.save.data.checkVer = false;
+						iconArray[curSelected].animation.play("disable");
+					}else{
+						FlxG.save.data.checkVer = true;
+						iconArray[curSelected].animation.play("enable");						
+					}
 			}
 		
 			FlxG.save.flush();
@@ -119,6 +137,29 @@ class OptionsMenu extends MusicBeatState
 			changeSelection(-1);
 		if (controls.DOWN_P)
 			changeSelection(1);
+
+		if (controls.LEFT_R)
+		{
+			if (Main.fps == 60)
+			{
+				Main.fps -= 0;
+			}else
+			{
+				Main.fps -= 10;
+			}
+		}
+
+		if (controls.RIGHT_R)
+		{
+			if (Main.fps == 240)
+			{
+				Main.fps += 0;
+			}else
+			{
+				Main.fps += 10;
+			}
+		}	
+
 	}
 
 	function changeSelection(change:Int = 0)
@@ -161,6 +202,13 @@ class OptionsMenu extends MusicBeatState
 
 			case "Watermark":
 				if (FlxG.save.data.watermark == true){
+					iconArray[curSelected].animation.play("enable");
+				}else{
+					iconArray[curSelected].animation.play("disable");					
+				}
+
+			case "Check Version":
+				if (FlxG.save.data.checkVer == true){
 					iconArray[curSelected].animation.play("enable");
 				}else{
 					iconArray[curSelected].animation.play("disable");					
