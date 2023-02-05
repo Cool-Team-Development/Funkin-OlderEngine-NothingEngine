@@ -4,6 +4,7 @@ import flixel.FlxG;
 import Controls.Control;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
+import cool_data.DataFlxG;
 
 class FirstPlay extends MusicBeatState
 {

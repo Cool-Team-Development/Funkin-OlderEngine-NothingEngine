@@ -5,6 +5,7 @@ import flixel.FlxGame;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import flixel.FlxG;
+import cool_data.DataFlxG;
 
 class Main extends Sprite
 {
