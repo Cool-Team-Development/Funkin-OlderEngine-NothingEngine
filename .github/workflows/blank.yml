@@ -118,7 +118,7 @@ jobs:
           path: export/release/macos/bin
 
 # dude, im will build for android and ios (maybe?)
-  buildAndroid: # base on Funkin Android (From Luckydog7)
+  buildAndroid:
     runs-on: ubuntu-latest
     
     # Steps represent a sequence of tasks that will be executed as part of the job
